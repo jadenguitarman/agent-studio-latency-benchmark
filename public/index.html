@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Where does Agent Studio latency come from?</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="hero">
+        <div class="eyebrow"><span class="signal-dot"></span> Agent Studio latency lab</div>
+        <h1>See the request travel<br /><em>before</em> you blame the model.</h1>
+        <p class="lede">This small benchmark separates the time spent reaching Algolia Search from the time spent getting an Agent Studio response. It is a teaching demo, not a production dashboard.</p>
+        <div class="hero-tags"><span>Controlled run</span><span>Same query set</span><span>Plain-English readout</span></div>
+      </header>
+
+      <section class="lab-grid" aria-label="Latency benchmark demo">
+        <div class="panel explainer">
+          <div class="panel-kicker">What we are comparing</div>
+          <h2>Three paths, one question</h2>
+          <div class="path-list">
+            <div class="path-row"><span class="path-number">01</span><div><strong>Raw Search</strong><p>How long does a direct search request take?</p></div><span class="path-key search-key"></span></div>
+            <div class="path-row"><span class="path-number">02</span><div><strong>Agent Studio · fixed index</strong><p>Search plus agent reasoning with the index already configured.</p></div><span class="path-key fixed-key"></span></div>
+            <div class="path-row"><span class="path-number">03</span><div><strong>Agent Studio · request-selected index</strong><p>Search plus agent reasoning when the application supplies the index for this request.</p></div><span class="path-key dynamic-key"></span></div>
+          </div>
+          <div class="plain-note"><span>i</span><p><strong>What the numbers mean:</strong> p50 is the middle result. p95 is a slower result that only about one request in twenty exceeds. Looking at both helps us avoid being fooled by one unusually fast or slow request.</p></div>
+        </div>
+
+        <div class="panel controls">
+          <div class="panel-kicker">Run the CLI in the browser</div>
+          <div class="control-head"><h2>Start a controlled run</h2><span id="mode-chip" class="mode-chip">Demo mode</span></div>
+          <p id="mode-note">The browser will run the same CLI with deterministic synthetic responses. No credentials are needed.</p>
+          <label class="toggle-row" id="live-toggle-row" hidden><input id="live-toggle" type="checkbox" /><span class="toggle-track"></span><span>Use configured Algolia endpoints</span></label>
+          <button id="run-button" class="run-button" type="button"><span class="play-icon">▶</span> Run benchmark</button>
+          <p class="control-foot">3 queries · 1 warm-up · 3 measured runs per case</p>
+        </div>
+      </section>
+
+      <section class="terminal-panel panel" aria-live="polite">
+        <div class="terminal-bar"><div class="window-dots"><i></i><i></i><i></i></div><span>agent-studio-latency-benchmark</span><span id="terminal-status" class="terminal-status">Ready</span></div>
+        <div id="terminal" class="terminal" role="log" aria-label="Benchmark command output">
+          <div class="terminal-line command"><span class="prompt">$</span> npm run benchmark -- --progress</div>
+          <div class="terminal-line muted">Press “Run benchmark” to start the controlled comparison.</div>
+        </div>
+      </section>
+
+      <section id="results" class="results-section" hidden>
+        <div class="results-heading"><div><div class="panel-kicker">The readout</div><h2>What happened?</h2></div><span id="result-label" class="result-label">Synthetic controlled demo</span></div>
+        <p class="results-intro">These numbers show the shape of the comparison. They do not tell us what production users will experience.</p>
+        <div id="summary-grid" class="summary-grid"></div>
+        <div class="metric-guide"><div><strong>Route time</strong><span>Time until the server receives response headers.</span></div><div><strong>Time to first token</strong><span>When Agent Studio starts sending text back.</span></div><div><strong>Total response</strong><span>Time until the complete response body arrives.</span></div></div>
+      </section>
+
+      <footer><span>Direct Agent Studio API · no DocSearch</span><span>Controlled or synthetic data only</span></footer>
+    </main>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

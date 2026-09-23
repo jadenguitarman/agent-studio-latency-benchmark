@@ -1,5 +1,9 @@
 .env
 node_modules/
+.next/
 dist/
 results/
 .DS_Store
+.vercel
+.env*
+provisioned.env

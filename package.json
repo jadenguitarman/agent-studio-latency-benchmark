@@ -1,0 +1,23 @@
+{
+  "name": "agent-studio-latency-benchmark",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Controlled local latency benchmark for Algolia Search and Agent Studio",
+  "type": "module",
+  "engines": {
+    "node": ">=20.9"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "benchmark": "node src/benchmark.mjs",
+    "provision": "node scripts/provision.mjs",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "next": "16.3.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  }
+}
