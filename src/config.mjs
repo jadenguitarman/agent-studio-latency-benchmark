@@ -26,14 +26,16 @@ function parseDotEnv(text) {
 
 async function loadEnvironment(cwd, env) {
   const merged = { ...env };
-  const dotenvPath = resolve(cwd, ".env");
-  try {
-    const fileValues = parseDotEnv(await readFile(dotenvPath, "utf8"));
-    for (const [key, value] of Object.entries(fileValues)) {
-      if (!(key in merged)) merged[key] = value;
+  const dotenvPaths = [resolve(cwd, "..", ".env"), resolve(cwd, ".env")];
+  for (const dotenvPath of dotenvPaths) {
+    try {
+      const fileValues = parseDotEnv(await readFile(dotenvPath, "utf8"));
+      for (const [key, value] of Object.entries(fileValues)) {
+        if (!(key in merged)) merged[key] = value;
+      }
+    } catch (error) {
+      if (error.code !== "ENOENT") throw error;
     }
-  } catch (error) {
-    if (error.code !== "ENOENT") throw error;
   }
   return merged;
 }
@@ -105,7 +107,7 @@ export async function loadConfig({ cwd = process.cwd(), env = process.env, overr
   const applicationId = requiredString(merged, "ALGOLIA_APPLICATION_ID", missing);
   const searchApiKey = requiredString(merged, "ALGOLIA_SEARCH_API_KEY", missing);
   const agentStudioApiKey = requiredString(merged, "ALGOLIA_AGENT_STUDIO_API_KEY", missing);
-  const agentId = requiredString(merged, "AGENT_STUDIO_AGENT_ID", missing);
+  const agentId = requiredString(merged, "LATENCY_BENCHMARK_AGENT_STUDIO_AGENT_ID", missing);
   const baselineIndex = requiredString(merged, "ALGOLIA_INDEX_NAME", missing);
   const queryFileValue = requiredString(merged, "BENCHMARK_QUERY_FILE", missing);
   if (missing.length) {

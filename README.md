@@ -12,10 +12,10 @@ Controlled pre-production benchmark for identifying the main contributors to lat
 
 ## Local use
 
-1. Use Node.js 20.9 or newer and copy `.env.example` to `.env`.
-2. Fill in the application ID, product index, runtime, management, and indexing keys, and the Agent Studio provider/model if the script will create an agent. Do not use or commit an Admin API key.
+1. Use Node.js 20.9 or newer. From the parent `Algolia Projects` folder, copy the shared `.env.example` to `.env`.
+2. Fill in the application ID, product index, Agent Studio key, management/indexing keys, and Agent Studio provider/model. Leave the generated copy index, target list, and agent ID blank. Do not use or commit an Admin API key.
 3. Run `npm run provision`. It verifies the product index, copies it to the controlled comparison index, and creates or updates the direct Agent Studio benchmark agent. It refuses to replace an existing comparison index unless `ALLOW_INDEX_OVERWRITE=true`.
-4. Copy the printed values into `.env`; `provisioned.env` contains the same non-secret names and IDs and is ignored by Git.
+4. The script writes the generated copy index, target list, and agent ID into the shared `.env`; `provisioned.env` contains the same non-secret names and IDs and is ignored by Git.
 5. Keep `queries.example.ndjson` or point `BENCHMARK_QUERY_FILE` at a local, non-sensitive newline-delimited query file. Each line can be plain text or `{ "id": "...", "query": "...", "tags": [] }`.
 6. Run `npm run benchmark` and review the generated `results/run-*.md` summary and matching `results/run-*.json` raw measurements.
 7. For a dynamic-index comparison, use the two targets printed by provisioning. The runner sends one target per Agent Studio request and also runs raw Search controls for those targets.
@@ -27,6 +27,8 @@ Run `npm run dev` and open `http://localhost:3000`. The Next.js page is a readab
 The browser defaults to deterministic synthetic demo mode, so a blog reader can run it without credentials. If the server has a complete `.env`, it shows an optional live toggle. Live mode is still a small controlled run, not production telemetry. Set `BENCHMARK_WEB_MODE=demo` for a public deployment unless live runs are deliberately enabled.
 
 `npm run provision -- --dry-run` prints the planned copy and agent write without contacting Algolia. Use `--skip-copy` or `--skip-agent` to leave one side unchanged. The provisioning script uses the direct Agent Studio API and Algolia Search indexing endpoints; it does not use DocSearch.
+
+To update the linked Vercel project after provisioning, export a Vercel access token in the shell and add `--sync-vercel`: `VERCEL_TOKEN=... npm run provision -- --publish --sync-vercel`. This updates production, preview, and development with only runtime values; management and indexing keys are never uploaded. A new deployment is required for Vercel environment changes to take effect.
 
 Use `npm run benchmark -- --dry-run` to validate the environment and query file without making network requests. `--iterations`, `--warmups`, `--concurrency`, `--timeout-ms`, and `--output-dir` override one run without editing `.env`.
 
